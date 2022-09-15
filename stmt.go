@@ -25,7 +25,6 @@ var (
 	_ driver.Stmt              = (*otStmt)(nil)
 	_ driver.StmtExecContext   = (*otStmt)(nil)
 	_ driver.StmtQueryContext  = (*otStmt)(nil)
-	_ driver.NamedValueChecker = (*otStmt)(nil)
 )
 
 type otStmt struct {
@@ -94,13 +93,4 @@ func (s *otStmt) QueryContext(ctx context.Context, args []driver.NamedValue) (ro
 		return nil, err
 	}
 	return newRows(ctx, rows, s.cfg), nil
-}
-
-func (s *otStmt) CheckNamedValue(namedValue *driver.NamedValue) error {
-	namedValueChecker, ok := s.Stmt.(driver.NamedValueChecker)
-	if !ok {
-		return driver.ErrSkip
-	}
-
-	return namedValueChecker.CheckNamedValue(namedValue)
 }
